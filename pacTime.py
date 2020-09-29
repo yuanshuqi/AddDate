@@ -25,16 +25,19 @@ def Days(y, m, d):
 
 import re
 def diffDays(start_day, end_day):
-    # 计算两个日期之间的天数 вычислить разница
+
+    #判断一下日期格式
     value = re.compile("[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]")
     result = value.match(start_day)
     if not result:
-        print("起始日期格式输入错误")
+        print("дата не правило!Вводите правилиная форма XXXX-XX-XX")
         return
     result = value.match(end_day)
     if not result:
-        print("结束日期格式输入错误")
+        print("дата не правило!Вводите правилиная форма XXXX-XX-XX")
         return
+
+    # 计算两个日期之间的天数
     y1 = int(start_day.split("-")[0])
     m1 = int(start_day.split("-")[1])
     d1 = int(start_day.split("-")[2])
@@ -43,13 +46,29 @@ def diffDays(start_day, end_day):
     m2 = int(end_day.split("-")[1])
     d2 = int(end_day.split("-")[2])
 
+    #判断是不是二月份 февраль
+    if isLeap(y1):
+        if m1 == 2:
+            if d1 > 29:
+                print("не правилино дата! Вводите правильный дата")
+                return
+    if isLeap(y2):
+        if m2 == 2:
+            if d2 > 29:
+                print("не правилино дата! Вводите правильный дата")
+                return
+
+#初始化
     sum = 0
+
+    #判断年
     if y1 == y2:
-        # 如果：同年不同月不同日 если это год одиного ну разный мясяца и разный день
+        # 如果：同年不同月不同日
         s1 = Days(y1, m1, d1)
         s2 = Days(y2, m2, d2)
         sum = dateAbs(s1, s2) + 1
         return sum
+
 
     elif y1 < y2:
         count = y2 - y1
@@ -59,29 +78,33 @@ def diffDays(start_day, end_day):
 
         p1 = Days(y1, 12, 31) - t1
 
+        #遍历差的年份
         sum = 0
         for i in range(count - 1):
             sum = sum + Days(y1 + i, 12, 31)
         p2 = sum
         p3 = t2 - 1
-        sum = p1 + p2 + p3 + 1
-        return -sum
+        sum = abs(p1 + p2 + p3 + 1)
+        return sum
     else:
+        #不同年的话 也没算出来 就把俩换一下
         temp = y1, m1, d1
         y1, m1, d1 = y2, m2, d2
         y2, m2, d2 = temp
         start_day = str(y1) + "-" + str(m1) + "-" + str(d1)
         end_day = str(y2) + "-" + str(m2) + "-" + str(d2)
-        return -diffDays(start_day, end_day)
+        return diffDays(start_day, end_day)
+
+
+# start_day = "2020-06-07"
+# end_day = '2020-06-08'
+# print("天数差(自己实现):", diffDays(start_day, end_day))
 
 #
-#
-start_day = input("вводите раннюю дату(формат:xxxx-xx-xx):")
-end_day = input("вводите поздняя дату(формат:xxxx-xx-xx):")
+# start_day = input("вводите раннюю дату(формат:xxxx-xx-xx):")
+# end_day = input("вводите поздняя дату(формат:xxxx-xx-xx):")
 
-
-
-print("разница дата(я писала):", diffDays(start_day, end_day))
+# print("разница дата(я писала):", diffDays(start_day, end_day))
 
 #проверить ответ
 import datetime
@@ -93,8 +116,8 @@ def datetime_days(str1, str2):
     num = (date1 - date2).days
     return num
 
-
-print("разница дата(with datetime):", datetime_days(start_day, end_day))
-
-if datetime_days(start_day,end_day)== diffDays(start_day, end_day):
-    print("ответ правило!")
+#
+# print("разница дата(with datetime):", datetime_days(start_day, end_day))
+#
+# if datetime_days(start_day,end_day)== diffDays(start_day, end_day):
+#     print("ответ правило!")
